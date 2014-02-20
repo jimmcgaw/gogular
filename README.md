@@ -30,5 +30,5 @@ app.
 =======
 Boot up the server from inside the gogular root:
 ```
-$ go run httpserver.go
+$ go run server.go
 ```

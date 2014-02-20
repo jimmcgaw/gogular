@@ -1,77 +1,36 @@
-// 2014.02.14
-
 package main
 
 import (
-	"flag"
-	"fmt"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"runtime"
-	"time"
+	"encoding/json"
 )
-
-var (
-	Debug = true
-	Port  = "8080"
-
-	Domain = flag.String("domain", "", "Domain or interface to listen on")
-)
-
-// func init() {
-// 	flag.BoolVar(&Debug, "debug", Debug, "Enable debugging (verbose output)")
-// 	flag.StringVar(&Port, "port", Port, "HTTP listen port")
-
-// 	// MUST run this to parse the above CLI flags
-// 	flag.Parse()
-// }
 
 var (
 	router = mux.NewRouter()
 )
 
-func init() {
-	// Tasks
-	router.HandleFunc("/", GetIndex).Methods("GET")
+func main() {
+	runtime.GOMAXPROCS(runtime.NumCPU())  // Use all CPU cores
+
+	router.HandleFunc("/", GetIndex)
+	router.HandleFunc("/api/about", GetAbout)
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./angapp/app")))
 
 	http.Handle("/", router)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("/Users/smoochy/source/gogular/angapp/app"))))
+
+	http.ListenAndServe(":8080", nil)
 }
-
-func main() {
-	// Use all CPU cores
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	// Start HTTP server
-	server := SimpleHTTPServer(router, *Domain+":"+Port)
-	log.Printf("HTTP server trying to listen on %v...\n", server.Addr)
-	if err := server.ListenAndServe(); err != nil {
-		log.Printf("HTTP listen failed: %v\n", err)
-	}
-}
-
-func SimpleHTTPServer(handler http.Handler, host string) *http.Server {
-	server := http.Server{
-		Addr:           host,
-		Handler:        handler,
-		ReadTimeout:    30 * time.Second,
-		WriteTimeout:   30 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	return &server
-}
-
-func writeError(w http.ResponseWriter, err error, statusCode int) {
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	http.Error(w, err.Error(), statusCode)
-}
-
-//
-// HTTP Handler functions
-//
 
 func GetIndex(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "angapp/app/index.html")	
+}
 
-	fmt.Fprintf(w, "Welcome to ballz!")
+func GetAbout(w http.ResponseWriter, r *http.Request) {
+	obj := map[string]string{}
+	obj["aboutus"] = "Here is some about us data that is coming from an API call."
+	someJson, _ := json.Marshal(obj)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(someJson)
 }
