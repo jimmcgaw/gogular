@@ -40,7 +40,7 @@ type Person struct {
 }
 
 func CreateDBTables() {
-	db, err := gorm.Open("mysql", "root:@/gogular")
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func CreatePerson() {
 		LastName:  "McGaw",
 	}
 
-	db, err := gorm.Open("mysql", "root:@/gogular")
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
 	// TODO : load all people from MySQL db and return as JSON
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
@@ -75,7 +75,7 @@ func CreatePerson() {
 }
 
 func GetPerson() {
-	db, err := gorm.Open("mysql", "root:@/gogular")
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
 	// TODO : load all people from MySQL db and return as JSON
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
@@ -88,7 +88,7 @@ func GetPerson() {
 }
 
 func GetAllPersons(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("mysql", "root:@/gogular")
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
 	// TODO : load all people from MySQL db and return as JSON
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
