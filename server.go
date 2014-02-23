@@ -3,7 +3,8 @@ package main
 import (
 	// "database/sql"
 	"encoding/json"
-	// "github.com/go-sql-driver/mysql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"net/http"
@@ -29,8 +30,8 @@ func main() {
 
 type Person struct {
 	id         uint8
-	first_name string
-	last_name  string
+	first_name string `sql:"size:50"`
+	last_name  string `sql:"size:50"`
 }
 
 func GetIndex(w http.ResponseWriter, r *http.Request) {
@@ -53,4 +54,12 @@ func GetAllPersons(w http.ResponseWriter, r *http.Request) {
 	}
 
 	d := db.DB()
+
+	d.Ping()
+
+	obj := map[string]string{}
+	obj["people"] = "insert list of people here"
+	someJson, _ := json.Marshal(obj)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(someJson)
 }
