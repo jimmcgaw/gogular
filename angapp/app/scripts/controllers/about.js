@@ -12,6 +12,10 @@ angular.module('angappApp')
   	var getInfoError = function(){
   		console.log("crud we errored out man.");
   	};
+  	
+  	$scope.refresh = function(){
+	    aboutService.getAboutInfo(getInfoSuccess, getInfoError);
+	  };
 
-    aboutService.getAboutInfo(getInfoSuccess, getInfoError);
+	  $scope.refresh();
   });
