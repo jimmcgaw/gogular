@@ -10,6 +10,7 @@
 			<th>First Name</th>
 			<th>Last Name</th>
 			<th>link</th>
+			<th>actions</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -17,6 +18,7 @@
 			<td>{{ person.FirstName }}</td>
 			<td>{{ person.LastName }}</td>
 			<td><a href="#/persons/{{ person.Id }}">view profile</a></td>
+			<td><a href="#/persons/edit/{{ person.Id }}">edit</a></td>
 		</tr>
 	</tbody>
 </table>

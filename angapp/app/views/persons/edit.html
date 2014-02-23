@@ -1,4 +1,4 @@
-<div ng-controller="NewPersonsCtrl">
+<div ng-controller="EditPersonsCtrl">
 	<form role="form" name="personForm">
 		<div class="form-group">
 			<label for="first_name">First Name</label>
@@ -6,12 +6,12 @@
 		</div>
 
 		<div class="form-group">
-			<label for="last_name">Last Name</label>
+			<label for="last_name">First Name</label>
 			<input required type="text" name="last_name" id="last_name" ng-model="person.LastName" />
 		</div>
 
 		<div class="form-group">
-			<button role="button" class="btn btn-primary" ng-click="savePerson(person)" ng-disabled="personForm.$invalid">Create</button>
+			<button role="button" class="btn btn-primary" ng-click="savePerson(person)">Update</button>
 		</div>
 	</form>
 </div>

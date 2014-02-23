@@ -22,7 +22,8 @@ func main() {
 	router.HandleFunc("/api/about", GetAbout)
 	router.HandleFunc("/api/persons", GetAllPersons).Methods("GET")
 	router.HandleFunc("/api/persons", CreatePerson).Methods("POST")
-	router.HandleFunc("/api/persons/{id:[0-9]+}", GetPerson)
+	router.HandleFunc("/api/persons/{id:[0-9]+}", GetPerson).Methods("GET")
+	router.HandleFunc("/api/persons/{id:[0-9]+}", UpdatePerson).Methods("PUT")
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./angapp/app")))
 
 	http.Handle("/", router)
@@ -62,12 +63,8 @@ func GetAbout(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("wo")
 	first_name := r.FormValue("first_name")
 	last_name := r.FormValue("last_name")
-
-	fmt.Printf(first_name)
-	fmt.Printf(last_name)
 
 	person := Person{FirstName: first_name, LastName: last_name}
 
@@ -78,6 +75,22 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.Save(&person)
+}
+
+func UpdatePerson(w http.ResponseWriter, r *http.Request) {
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
+	// TODO : load all people from MySQL db and return as JSON
+	if err != nil {
+		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
+	}
+
+	params := mux.Vars(r)
+	id := params["id"]
+
+	first_name := r.FormValue("first_name")
+	last_name := r.FormValue("last_name")
+
+	db.Model(Person{}).Where(id).Updates(Person{FirstName: first_name, LastName: last_name})
 }
 
 func GetPerson(w http.ResponseWriter, r *http.Request) {

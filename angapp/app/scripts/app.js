@@ -28,6 +28,10 @@ angular.module('angappApp', [
         templateUrl: 'views/persons/show.html',
         controller: 'PersonsShowCtrl'
       })
+      .when('/persons/edit/:id', {
+        templateUrl: 'views/persons/edit.html',
+        controller: 'EditPersonsCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

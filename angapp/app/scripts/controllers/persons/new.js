@@ -7,11 +7,10 @@ angular.module('angappApp')
     };
 
     var savePersonError = function(response){
-    	alert(response);
+    	
     };
 
     $scope.savePerson = function(person){
-    	console.log(person);
     	var params = {
     		'first_name' : person.FirstName,
     		'last_name' : person.LastName
