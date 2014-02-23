@@ -1,0 +1,17 @@
+<div ng-controller="NewPersonsCtrl">
+	<form role="form">
+		<div class="form-group">
+			<label for="first_name">First Name</label>
+			<input type="text" name="first_name" id="first_name" ng-model="person.FirstName" />
+		</div>
+
+		<div class="form-group">
+			<label for="first_name">First Name</label>
+			<input type="text" name="first_name" id="first_name" ng-model="person.LastName" />
+		</div>
+
+		<div class="form-group">
+			<button role="button" class="btn btn-primary" ng-click="savePerson(person)">Create</button>
+		</div>
+	</form>
+</div>

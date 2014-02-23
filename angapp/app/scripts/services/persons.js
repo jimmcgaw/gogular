@@ -5,6 +5,14 @@ angular.module('angappApp')
 			'query' : {
 				'method' : 'GET',
 				'isArray' : false
+			},
+			'save' : {
+				'method' : 'POST',
+				'isArray' : false,
+				'params' : {
+					'first_name' : '@first_name',
+					'last_name' : '@last_name'
+				}
 			}
 		});
 
@@ -18,12 +26,16 @@ angular.module('angappApp')
 		var factory = {};
 
 		factory.getPersons = function(success, error){
-			return personsResource.query(success, error)
+			return personsResource.query(success, error);
 		};
 
 		factory.getPerson = function(params, success, error) {
 			return personResource.get(params, success, error);
-		}
+		};
+
+		factory.savePerson = function(params, success, error) {
+			personsResource.save(params, success, error);
+		};
 
 		return factory;
 	});

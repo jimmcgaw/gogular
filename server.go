@@ -20,7 +20,8 @@ func main() {
 
 	router.HandleFunc("/", GetIndex)
 	router.HandleFunc("/api/about", GetAbout)
-	router.HandleFunc("/api/persons", GetAllPersons)
+	router.HandleFunc("/api/persons", GetAllPersons).Methods("GET")
+	router.HandleFunc("/api/persons", CreatePerson).Methods("POST")
 	router.HandleFunc("/api/persons/{id:[0-9]+}", GetPerson)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./angapp/app")))
 
@@ -60,25 +61,23 @@ func GetAbout(w http.ResponseWriter, r *http.Request) {
 	w.Write(someJson)
 }
 
-func CreatePerson() {
-	remy := Person{
-		FirstName: "Remy",
-		LastName:  "Younes",
-	}
+func CreatePerson(w http.ResponseWriter, r *http.Request) {
+	fmt.Printf("wo")
+	first_name := r.FormValue("first_name")
+	last_name := r.FormValue("last_name")
+
+	fmt.Printf(first_name)
+	fmt.Printf(last_name)
+
+	person := Person{FirstName: first_name, LastName: last_name}
 
 	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
 	// TODO : load all people from MySQL db and return as JSON
 	if err != nil {
-		panic(fmt.Sprintf("Got error when connecting to database, the error is '%v'", err))
+		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
 	}
 
-	db.Save(&remy)
-
-	jim := Person{
-		FirstName: "Jim",
-		LastName:  "McGaw",
-	}
-	db.Save(&jim)
+	db.Save(&person)
 }
 
 func GetPerson(w http.ResponseWriter, r *http.Request) {
@@ -90,9 +89,6 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	id := params["id"]
-
-	d := db.DB()
-	d.Ping()
 
 	person := Person{}
 	my_person := db.First(&person, id)
@@ -108,9 +104,6 @@ func GetAllPersons(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
 	}
-
-	d := db.DB()
-	d.Ping()
 
 	persons := []Person{}
 	people := db.Find(&persons)

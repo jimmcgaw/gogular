@@ -20,6 +20,10 @@ angular.module('angappApp', [
         templateUrl: 'views/persons.html',
         controller: 'PersonsCtrl'
       })
+      .when('/persons/new', {
+        templateUrl: 'views/persons/new.html',
+        controller: 'NewPersonsCtrl'
+      })
       .when('/persons/:id', {
         templateUrl: 'views/persons/show.html',
         controller: 'PersonsShowCtrl'
