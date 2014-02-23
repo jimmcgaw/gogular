@@ -21,12 +21,13 @@ func main() {
 	router.HandleFunc("/", GetIndex)
 	router.HandleFunc("/api/about", GetAbout)
 	router.HandleFunc("/api/persons", GetAllPersons)
+	router.HandleFunc("/api/persons/{id:[0-9]+}", GetPerson)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./angapp/app")))
 
 	http.Handle("/", router)
 
 	CreateDBTables()
-	// uncomment and run to create Jim
+	// uncomment and run to create Remy
 	// CreatePerson()
 
 	fmt.Println("Server is running and listening at localhost:8080")
@@ -60,31 +61,45 @@ func GetAbout(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreatePerson() {
-	person := Person{
+	remy := Person{
+		FirstName: "Remy",
+		LastName:  "Younes",
+	}
+
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
+	// TODO : load all people from MySQL db and return as JSON
+	if err != nil {
+		panic(fmt.Sprintf("Got error when connecting to database, the error is '%v'", err))
+	}
+
+	db.Save(&remy)
+
+	jim := Person{
 		FirstName: "Jim",
 		LastName:  "McGaw",
 	}
-
-	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
-	// TODO : load all people from MySQL db and return as JSON
-	if err != nil {
-		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
-	}
-
-	db.Save(&person)
+	db.Save(&jim)
 }
 
-func GetPerson() {
+func GetPerson(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
 	// TODO : load all people from MySQL db and return as JSON
 	if err != nil {
 		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
 	}
+
+	params := mux.Vars(r)
+	id := params["id"]
 
 	d := db.DB()
 	d.Ping()
 
-	// person := db.First(&persons) // grab first record
+	person := Person{}
+	my_person := db.First(&person, id)
+
+	someJson, _ := json.Marshal(my_person)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(someJson)
 }
 
 func GetAllPersons(w http.ResponseWriter, r *http.Request) {
@@ -97,11 +112,12 @@ func GetAllPersons(w http.ResponseWriter, r *http.Request) {
 	d := db.DB()
 	d.Ping()
 
-	// db.Find(&persons)
+	persons := []Person{}
+	people := db.Find(&persons)
 
-	obj := map[string]string{}
-	obj["people"] = "insert list of people here"
-	someJson, _ := json.Marshal(obj)
+	// obj := map[string]string{}
+	// obj["people"] = "duh person or something"
+	someJson, _ := json.Marshal(people)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(someJson)
 }

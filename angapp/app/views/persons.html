@@ -1,0 +1,18 @@
+<h2>PEOPLE</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>First Name</th>
+			<th>Last Name</th>
+			<th>link</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="person in persons">
+			<td>{{ person.FirstName }}</td>
+			<td>{{ person.LastName }}</td>
+			<td><a href="#/persons/{{ person.Id }}">view profile</a></td>
+		</tr>
+	</tbody>
+</table>

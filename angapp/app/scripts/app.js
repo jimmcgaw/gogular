@@ -16,6 +16,14 @@ angular.module('angappApp', [
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
+      .when('/persons', {
+        templateUrl: 'views/persons.html',
+        controller: 'PersonsCtrl'
+      })
+      .when('/persons/:id', {
+        templateUrl: 'views/persons/show.html',
+        controller: 'PersonsShowCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
