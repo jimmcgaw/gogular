@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "database/sql"
 	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -43,11 +42,8 @@ type Person struct {
 }
 
 func CreateDBTables() {
-	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
-	if err != nil {
-		panic(err)
-	}
-	db.CreateTable(Person{})
+	db := OpenDB()
+	db.AutoMigrate(Person{})
 }
 
 func GetIndex(w http.ResponseWriter, r *http.Request) {
@@ -68,21 +64,13 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 
 	person := Person{FirstName: first_name, LastName: last_name}
 
-	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
-	// TODO : load all people from MySQL db and return as JSON
-	if err != nil {
-		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
-	}
+	db := OpenDB()
 
 	db.Save(&person)
 }
 
 func UpdatePerson(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
-	// TODO : load all people from MySQL db and return as JSON
-	if err != nil {
-		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
-	}
+	db := OpenDB()
 
 	params := mux.Vars(r)
 	id := params["id"]
@@ -94,11 +82,7 @@ func UpdatePerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPerson(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
-	// TODO : load all people from MySQL db and return as JSON
-	if err != nil {
-		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
-	}
+	db := OpenDB()
 
 	params := mux.Vars(r)
 	id := params["id"]
@@ -112,18 +96,20 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllPersons(w http.ResponseWriter, r *http.Request) {
-	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
-	// TODO : load all people from MySQL db and return as JSON
-	if err != nil {
-		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
-	}
+	db := OpenDB()
 
 	persons := []Person{}
 	people := db.Find(&persons)
 
-	// obj := map[string]string{}
-	// obj["people"] = "duh person or something"
 	someJson, _ := json.Marshal(people)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(someJson)
+}
+
+func OpenDB() gorm.DB {
+	db, err := gorm.Open("mysql", "root:@tcp(localhost:3306)/gogular")
+	if err != nil {
+		panic(fmt.Sprintf("Got error when connect database, the error is '%v'", err))
+	}
+	return db
 }
