@@ -2,20 +2,21 @@
 
 angular.module('angappApp')
   .controller('EditPersonsCtrl', function ($scope, $routeParams, personsService) {
-    var savePersonSuccess = function(response){
+    var updatePersonSuccess = function(response){
     	// what should I do here?
     };
 
-    var savePersonError = function(response){
+    var updatePersonError = function(response){
 
     };
 
-    $scope.savePerson = function(person){
+    $scope.updatePerson = function(person){
     	var params = {
     		'first_name' : person.FirstName,
-    		'last_name' : person.LastName
+    		'last_name' : person.LastName,
+        'personId' : $routeParams.id
     	};
-    	personsService.savePerson(params, savePersonSuccess, savePersonError);
+    	personsService.updatePerson(params, updatePersonSuccess, updatePersonError);
     };
 
     var getPersonSuccess = function(response){

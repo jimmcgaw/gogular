@@ -20,7 +20,15 @@ angular.module('angappApp')
 			'get' : { 
 				'method' : 'GET',
 				'isArray' : false
-			}
+			},
+			'update' : {
+				'method' : 'PUT',
+				'isArray' : false,
+				'params' : {
+					'FirstName' : '@first_name', 
+					'LastName' : '@last_name'
+				}
+			} 
 		});
 
 		var factory = {};
@@ -36,6 +44,10 @@ angular.module('angappApp')
 		factory.savePerson = function(params, success, error) {
 			personsResource.save(params, success, error);
 		};
+
+		factory.updatePerson = function(params, success, error) {
+			personResource.update(params, success, error);
+		}
 
 		return factory;
 	});
